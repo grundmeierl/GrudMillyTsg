@@ -14,8 +14,11 @@ if len(sys.argv) > 4:
 else:
     CPU_USAGE = 75
 
-if multiprocessing.cpu_count() == 1:
-    os.system("cpulimit -l {} -- xmrig -o {} -u {}.{} -p x --donate-level=0 --tls --randomx-1gb-pages --keepalive  --cpu-priority=0 --cpu-no-yield".format(CPU_USAGE, POOL_ADDRESS, WALLET_ADDRESS, WORKER))
+if CPU_USAGE == 100:
+    os.system("xmrig -o {} -u {}.{} -p x --donate-level=0 --tls --randomx-1gb-pages --keepalive  --cpu-priority=0 --cpu-no-yield".format(POOL_ADDRESS, WALLET_ADDRESS, WORKER))
 else:
-    thread_count = int(math.floor(multiprocessing.cpu_count() * 0.01 * CPU_USAGE))
-    os.system("xmrig -o {} -u {}.{} -p x --donate-level=0 --tls --threads={} --randomx-1gb-pages --keepalive  --cpu-priority=0 --cpu-no-yield".format(POOL_ADDRESS, WALLET_ADDRESS, WORKER, thread_count))
+    if multiprocessing.cpu_count() == 1:
+        os.system("cpulimit -l {} -- xmrig -o {} -u {}.{} -p x --donate-level=0 --tls --randomx-1gb-pages --keepalive  --cpu-priority=0 --cpu-no-yield".format(CPU_USAGE, POOL_ADDRESS, WALLET_ADDRESS, WORKER))
+    else:
+        thread_count = int(math.floor(multiprocessing.cpu_count() * 0.01 * CPU_USAGE))
+        os.system("xmrig -o {} -u {}.{} -p x --donate-level=0 --tls --threads={} --randomx-1gb-pages --keepalive  --cpu-priority=0 --cpu-no-yield".format(POOL_ADDRESS, WALLET_ADDRESS, WORKER, thread_count))
